@@ -1,6 +1,6 @@
 import RPi.GPIO as io
 import time
-from flask import Flask, render_template
+from flask import Flask, json, render_template
 
 app = Flask(__name__)
 io.setmode(io.BCM)
@@ -16,7 +16,7 @@ def flash():
     io.output(led1, True)
     time.sleep(1)
     io.output(led1, False)
-    return render_template('main.html')
+    return json.dumps({'success':True}, 200, {'ContentType':'application/json'})
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
