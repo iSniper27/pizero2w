@@ -1,11 +1,18 @@
 import RPi.GPIO as io
 import time
-from flask import Flask, json, render_template
+from flask import Flask, json, request, render_template
 
 app = Flask(__name__)
 io.setmode(io.BCM)
-led1 = 27
-io.setup(led1, io.OUT)
+pins = {
+    22 : {'name' : 'red', 'state' : io.LOW},
+    23 : {'name' : 'green', 'state' : io.LOW},
+    24 : {'name' : 'blue', 'state' : io.LOW}
+   }
+
+for pin in pins:
+    io.setup(pin, io.OUT)
+    io.output(pin, io.LOW)
 
 @app.route('/')
 def main():
@@ -13,10 +20,11 @@ def main():
 
 @app.route('/flash')
 def flash():
-    io.output(led1, True)
-    time.sleep(1)
-    io.output(led1, False)
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+    colour = request.args.get('colour')
+    if colour.lower() in pins.values('name'):
+        return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+    else:
+        return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
