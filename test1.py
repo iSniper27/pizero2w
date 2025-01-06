@@ -22,7 +22,7 @@ def main():
 def flash():
     colour = request.args.get('colour')
     if colour in pins.values():
-        pin = {i for i in pins if pins[i]==colour}
+        pin = [i for i in pins if pins[i]==colour]
         io.output(pin, io.HIGH)
         time.sleep(1)
         io.output(pin, io.LOW)
