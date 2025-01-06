@@ -20,8 +20,12 @@ def main():
 
 @app.route('/flash')
 def flash():
-    colour = str(request.args.get('colour'))
-    if colour.lower() in pins.values():
+    colour = request.args.get('colour')
+    if colour in pins.values():
+        pin = {i for i in pins if pins[i]==colour}
+        io.output(pin, io.HIGH)
+        time.sleep(1)
+        io.output(pin, io.LOW)
         return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
     else:
         return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
