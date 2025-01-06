@@ -5,9 +5,9 @@ from flask import Flask, json, request, render_template
 app = Flask(__name__)
 io.setmode(io.BCM)
 pins = {
-    22 : {'name' : 'red', 'state' : io.LOW},
-    23 : {'name' : 'green', 'state' : io.LOW},
-    24 : {'name' : 'blue', 'state' : io.LOW}
+    22 : 'red',
+    23 : 'green',
+    24 : 'blue'
    }
 
 for pin in pins:
@@ -21,7 +21,7 @@ def main():
 @app.route('/flash')
 def flash():
     colour = str(request.args.get('colour'))
-    if colour.lower() in pins.values('name'):
+    if colour.lower() in pins.values():
         return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
     else:
         return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
