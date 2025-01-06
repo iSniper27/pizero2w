@@ -16,7 +16,7 @@ def flash():
     io.output(led1, True)
     time.sleep(1)
     io.output(led1, False)
-    return json.dumps({'success':True}, 200, {'ContentType':'application/json'})
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
