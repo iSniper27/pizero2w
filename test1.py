@@ -20,7 +20,7 @@ def main():
 
 @app.route('/flash')
 def flash():
-    colour = request.args.get('colour')
+    colour = str(request.args.get('colour'))
     if colour.lower() in pins.values('name'):
         return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
     else:
