@@ -4,9 +4,9 @@ from flask import Flask, json, request, render_template
 
 app = Flask(__name__)
 pins = {
-    LED(22) : 'red',
-    LED(23) : 'green',
-    LED(24) : 'blue'
+    'red' : LED(22),
+    'green' : LED(23),
+    'blue' : LED(24)
 }
 
 @app.route('/')
@@ -16,8 +16,8 @@ def main():
 @app.route('/flash')
 def flash():
     colour = request.args.get('colour')
-    if colour in pins.values():
-        pin = [i for i in pins if pins[i]==colour][0]
+    if colour in pins.keys():
+        pin = pins.get(colour)
         pin.on()
         time.sleep(1)
         pin.off()
