@@ -2,15 +2,11 @@ from gpiozero import LED
 import time
 from flask import Flask, json, request, render_template
 
-red = LED(22)
-green = LED(23)
-blue = LED(24)
-
 app = Flask(__name__)
 pins = {
-    'red' : red,
-    'green' : green,
-    'blue' : blue
+    'red' : LED(22),
+    'green' : LED(23),
+    'blue' : LED(24)
 }
 
 @app.route('/')
