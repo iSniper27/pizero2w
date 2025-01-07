@@ -17,7 +17,7 @@ def main():
 def flash():
     colour = request.args.get('colour')
     if colour in pins.values():
-        pin = [i for i in pins if pins[i]==colour]
+        pin = [i for i in pins if pins[i]==colour][0]
         pin.on()
         time.sleep(1)
         pin.off()
