@@ -32,8 +32,6 @@ def flash():
 def rgb():
     colour = eval(request.args.get('colour'))
     try:
-        print(colour)
-        print(type(colour))
         rgbled.color = colour
         return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
     except:
