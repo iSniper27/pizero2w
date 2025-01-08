@@ -30,7 +30,7 @@ def flash():
     
 @app.route('/rgb')
 def rgb():
-    colour = tuple(request.args.get('colour'))
+    colour = eval(request.args.get('colour'))
     try:
         rgbled.color = colour
         return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
