@@ -1,11 +1,12 @@
 <!doctype html>
 <html>
 <head>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/mainpage.css') }}">
     <title>led server control</title>
 </head>
 <body>
     {% for value in leds.keys() %}
-        <button onclick="func('{{value}}')">flash {{value}} button</button>
+        <button onclick="func('{{value}}')" class="flashButton">flash {{value}} button</button>
     {% endfor %}
 </body>
 

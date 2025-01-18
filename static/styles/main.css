@@ -1,0 +1,10 @@
+.flashButton {
+    border: solid 5px;
+    padding: 5px;
+    margin: 5px;
+    background-color: lightgray;
+}
+
+.flashButton:active {
+    background-color: gray;
+}
