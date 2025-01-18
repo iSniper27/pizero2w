@@ -4,8 +4,12 @@
     <title>led server control</title>
 </head>
 <body>
-    <div>
-        <form action="/flash"><button type="submit">flash button</button></form>
-    </div>
+    <button onclick="test()">flash red button</button>
 </body>
+
+    <script> 
+        function test() {
+            fetch("http://192.168.68.63:5000/light?type=led&colour=red")
+        }
+    </script>
 </html>
