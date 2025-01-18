@@ -5,14 +5,15 @@
 </head>
 <body>
     {% for value in leds.keys() %}
-        <button onclick="func()">flash {{value}} button</button>
-        <script> 
-            function func() {
-                fetch("http://192.168.68.63:5000/light?type=led&colour={{value}}")
-            }
-        </script>
+        <button onclick="func('{{value}}')">flash {{value}} button</button>
     {% endfor %}
 </body>
+
+<script> 
+    function func(value) {
+        fetch(`http://192.168.68.63:5000/light?type=led&colour=${value}`)
+    }
+</script>
 
 
 </html>
