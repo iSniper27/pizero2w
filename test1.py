@@ -2,8 +2,11 @@ from gpiozero import LED, RGBLED, Buzzer
 import time
 import threading
 from flask import Flask, json
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+CORS(app)
 
 leds = {
     'red' : LED(22),
