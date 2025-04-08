@@ -1,6 +1,6 @@
-from gpiozero import LED, RGBLED
+from gpiozero import LED, RGBLED, Buzzer
 import time
-from flask import Flask, json, request, render_template
+from flask import Flask, request
 
 app = Flask(__name__)
 
@@ -11,28 +11,14 @@ leds = {
 }
 
 rgb = RGBLED(red=9, green=10, blue=11, active_high=False)
+buzzer = Buzzer(26)
 
-@app.route('/')
-def main():
-    return render_template('main.html', leds=leds)
-
-@app.route('/light')
-def flash():
-    type = request.args.get('type')
-    try:
-        if type == 'led':
-            colour = request.args.get('colour')
-            pin = leds.get(colour)
-            pin.on()
-            time.sleep(1)
-            pin.off()
-            return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
-        elif type == 'rgb':
-            rgbcode = eval(request.args.get('rgbcode'))
-            rgb.color = rgbcode
-        return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
-    except:
-        return json.dumps({'success':False}), 400, {'ContentType':'application/json'}
+@app.route('/flash/<color>')
+def flashred(color):
+    pin = leds.get(color)
+    pin.on()
+    time.sleep(1)
+    pin.off()
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
