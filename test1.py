@@ -14,8 +14,8 @@ leds = {
     'blue' : LED(24)
 }
 
-rgb = RGBLED(red=9, green=10, blue=11, active_high=False)
-buzzer = Buzzer(26)
+rgb = "RGBLED(red=9, green=10, blue=11, active_high=False)"
+buzzer = "Buzzer(26)"
 
 def flash_led(pin):
     pin.on()
