@@ -47,7 +47,7 @@ the end and "Online Sequencer:120233:" from the start
 from machine import Pin
 
 #One buzzer on pin 0
-mySong = music(song, pins=[Pin(0)])
+mySong = music(song, pins=[Pin(13)])
 
 #Four buzzers
 #mySong = music(song, pins=[Pin(0),Pin(1),Pin(2),Pin(3)])
