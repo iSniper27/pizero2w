@@ -20,7 +20,7 @@ def flash_led(pin, color):
     pin.on()
     time.sleep(1)
     pin.off()
-    socketio.emit('led_flashing', {'color': 'black'})
+    socketio.emit('led_flashing', {'color': ''})
 
 @app.route('/flash/<color>')
 def flash_color(color):
