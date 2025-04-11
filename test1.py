@@ -29,7 +29,7 @@ def flash_color(color):
     pin = leds.get(color)
     if pin:
         socketio.emit('led_flashing', {'color': color})
-        threading.Thread(target=flash_led, args=(pin)).start()
+        threading.Thread(target=flash_led, args=(pin,)).start()
         return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
     else:
         return json.dumps({'success': False, 'error': 'Invalid color'}), 400, {'ContentType': 'application/json'}
