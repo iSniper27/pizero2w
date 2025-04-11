@@ -1,11 +1,11 @@
-import eventlet
-eventlet.monkey_patch()
-
 from gpiozero import LED, RGBLED, Buzzer
 import time
 from flask import Flask, json
 from flask_cors import CORS
 from flask_socketio import SocketIO
+
+import eventlet
+eventlet.monkey_patch()
 
 app = Flask(__name__)
 CORS(app)
