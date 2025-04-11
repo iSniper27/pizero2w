@@ -10,11 +10,13 @@ CORS(app)
 
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 
+
 leds = {
     'red': LED(22),
     'green': LED(23),
     'blue': LED(24)
 }
+
 
 def flash_led(pin, color):
     pin.on()
