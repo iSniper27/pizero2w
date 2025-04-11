@@ -1,14 +1,12 @@
+# buzzer_music.py
+
 from gpiozero import TonalBuzzer
 from gpiozero.tones import Tone
 from math import ceil
-from time import sleep
-
-# Note: gpiozero.Tone accepts standard note strings like "A4", "C#5", etc.
-# So we can skip defining `tones` unless you want to validate or map manually.
 
 class music:
     def __init__(self, songString='0 D4 8 0', looping=True, tempo=3, pin=None, pins=[13]):
-        self.tempo = tempo  # Lower = faster playback
+        self.tempo = tempo
         self.song = songString
         self.looping = looping
         
@@ -20,7 +18,6 @@ class music:
         
         self.buzzers = []
 
-        # Convert pin numbers to TonalBuzzers
         if pin is not None:
             pins = [pin]
         self.pins = pins
@@ -31,7 +28,6 @@ class music:
         self.playingNotes = []
         self.playingDurations = []
 
-        # Calculate end of song
         self.end = 0
         splitSong = self.song.split(";")
         for note in splitSong:
@@ -40,19 +36,17 @@ class music:
             if testEnd > self.end:
                 self.end = testEnd
         
-        # Create empty song structure
         while len(self.notes) < self.end:
             self.notes.append(None)
 
-        # Fill song structure
         for note in splitSong:
             snote = note.split(" ")
             beat = round(float(snote[0]))
             if self.notes[beat] is None:
                 self.notes[beat] = []
-            self.notes[beat].append([snote[1], ceil(float(snote[2]))])  # Note, Duration
+            self.notes[beat].append([snote[1], ceil(float(snote[2]))])
 
-        self.end = ceil(self.end / 8) * 8  # Round to nearest bar
+        self.end = ceil(self.end / 8) * 8
 
     def stop(self):
         for buzzer in self.buzzers:
@@ -77,7 +71,6 @@ class music:
 
         self.timer += 1
 
-        # Loop
         if self.timer % (self.tempo * self.end) == 0 and self.timer != 0:
             if not self.looping:
                 self.stop()
@@ -85,11 +78,9 @@ class music:
             self.beat = -1
             self.timer = 0
 
-        # On beat
         if self.timer % self.tempo == 0:
             self.beat += 1
 
-            # Update durations and remove expired notes
             i = 0
             while i < len(self.playingDurations):
                 self.playingDurations[i] -= 1
@@ -99,13 +90,11 @@ class music:
                 else:
                     i += 1
 
-            # Add new notes
             if self.beat < len(self.notes) and self.notes[self.beat]:
                 for note in self.notes[self.beat]:
                     self.playingNotes.append(note[0])
                     self.playingDurations.append(note[1])
 
-            # Play notes on available buzzers
             for i, buzzer in enumerate(self.buzzers):
                 if i >= len(self.playingNotes):
                     buzzer.stop()
@@ -115,7 +104,6 @@ class music:
                     except:
                         buzzer.stop()
 
-        # Arpeggiate remaining notes using last buzzer (if more notes than buzzers)
         if len(self.playingNotes) > len(self.buzzers):
             buzzer = self.buzzers[-1]
             if self.arpnote >= len(self.playingNotes) - len(self.buzzers) + 1:
