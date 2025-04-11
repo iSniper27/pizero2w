@@ -1,4 +1,4 @@
-from gpiozero import LED, RGBLED, Buzzer
+from gpiozero import LED
 import time
 import threading
 from flask import Flask, json
@@ -16,20 +16,18 @@ leds = {
     'blue': LED(24)
 }
 
-#rgb = RGBLED(red=9, green=10, blue=11, active_high=False)
-#buzzer = Buzzer(26)
-
-def flash_led(pin):
+def flash_led(pin, color):
     pin.on()
     time.sleep(1)
     pin.off()
+    socketio.emit('led_flashing', {'color': color})
 
 @app.route('/flash/<color>')
 def flash_color(color):
     pin = leds.get(color)
     if pin:
         socketio.emit('led_flashing', {'color': color})
-        threading.Thread(target=flash_led, args=(pin,)).start()
+        threading.Thread(target=flash_led, args=(pin, color)).start()
         return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
     else:
         return json.dumps({'success': False, 'error': 'Invalid color'}), 400, {'ContentType': 'application/json'}
