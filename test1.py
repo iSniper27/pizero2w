@@ -16,8 +16,8 @@ leds = {
     'blue': LED(24)
 }
 
-rgb = RGBLED(red=9, green=10, blue=11, active_high=False)
-buzzer = Buzzer(26)
+#rgb = RGBLED(red=9, green=10, blue=11, active_high=False)
+#buzzer = Buzzer(26)
 
 def flash_led(pin):
     pin.on()
@@ -34,6 +34,5 @@ def flash_color(color):
     else:
         return json.dumps({'success': False, 'error': 'Invalid color'}), 400, {'ContentType': 'application/json'}
 
-# Run the server
 if __name__ == "__main__":
     socketio.run(app, host='0.0.0.0', port=5000)
