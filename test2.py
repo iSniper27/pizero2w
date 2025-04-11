@@ -1,23 +1,10 @@
-from gpiozero import TonalBuzzer
-from gpiozero.tones import Tone
 from time import sleep
 
-buzzer = TonalBuzzer(13)
+# Example song string from your comment
+song = "0 D4 8 0;0 D5 8 0;0 G4 8 0;8 C5 2 0;10 B4 2 0;12 G4 2 0;14 F4 1 0;15 G4 17 0;16 D4 8 0;24 C4 8 0"
 
-def playBuzzer(buzzer):
-    buzzer.play(Tone("A4"))
-    sleep(0.2)
-    buzzer.play(Tone("B4"))
-    sleep(0.2)
-    buzzer.play(Tone("C4"))
-    sleep(0.2)
-    buzzer.play(Tone("D4"))
-    sleep(0.2)
-    buzzer.play(Tone("E4"))
-    sleep(0.2)
-    buzzer.play(Tone("F4"))
-    sleep(0.2)
-    buzzer.stop()
-    
+player = music(songString=song, tempo=3, pins=[13])  # One buzzer
+# Or for polyphony: pins=[13, 14, 15]
 
-playBuzzer(buzzer)
+while player.tick():
+    sleep(0.01)
