@@ -1,6 +1,3 @@
-from buzzer_music import music
-from time import sleep
-
 #Example songs
 
 #    https://onlinesequencer.net/195547
