@@ -47,10 +47,28 @@ from gpiozero import TonalBuzzer
 from gpiozero.tones import Tone
 from time import sleep, time
 
+# Sharp to flat mapping
+ENHARMONIC_EQUIVALENTS = {
+    'A#': 'Bb',
+    'C#': 'Db',
+    'D#': 'Eb',
+    'F#': 'Gb',
+    'G#': 'Ab'
+}
+
+def normalize_note(note):
+    """
+    Converts sharp notes to their flat equivalents if needed.
+    Example: A#5 -> Bb5
+    """
+    for sharp, flat in ENHARMONIC_EQUIVALENTS.items():
+        if note.startswith(sharp):
+            return note.replace(sharp, flat)
+    return note
+
 def parse_song(song_str):
     """
     Parses the input song string and returns a list of notes with timing info.
-    Each note has (start_beat, note, duration_in_beats)
     """
     notes = []
     for entry in song_str.strip().split(";"):
@@ -58,7 +76,7 @@ def parse_song(song_str):
             parts = entry.strip().split()
             if len(parts) == 5:
                 start_beat = float(parts[0])
-                note = parts[1]
+                note = normalize_note(parts[1])
                 duration_beats = float(parts[4])
                 notes.append((start_beat, note, duration_beats))
     return notes
@@ -72,7 +90,6 @@ def play_song(song_str, bpm=145, pin=17):
     song = parse_song(song_str)
     beat_duration = 60 / bpm
 
-    # Start timer
     start_playback = time()
 
     for start_beat, note_name, duration_beats in song:
@@ -92,6 +109,7 @@ def play_song(song_str, bpm=145, pin=17):
             print(f"Warning: Invalid note {note_name} – skipping.")
 
     buzzer.stop()
+
 
 
 play_song(song, bpm=145, pin=13)
