@@ -42,29 +42,9 @@ then select all notes with CTRL+A and copy them with CTRL+C
 Paste string as shown above after removing ";:" from
 the end and "Online Sequencer:120233:" from the start
 """
-
 from gpiozero import TonalBuzzer
 from gpiozero.tones import Tone
 from time import sleep, time
-
-# Sharp to flat mapping
-ENHARMONIC_EQUIVALENTS = {
-    'A#': 'Bb',
-    'C#': 'Db',
-    'D#': 'Eb',
-    'F#': 'Gb',
-    'G#': 'Ab'
-}
-
-def normalize_note(note):
-    """
-    Converts sharp notes to their flat equivalents if needed.
-    Example: A#5 -> Bb5
-    """
-    for sharp, flat in ENHARMONIC_EQUIVALENTS.items():
-        if note.startswith(sharp):
-            return note.replace(sharp, flat)
-    return note
 
 def parse_song(song_str):
     """
@@ -76,7 +56,7 @@ def parse_song(song_str):
             parts = entry.strip().split()
             if len(parts) == 5:
                 start_beat = float(parts[0])
-                note = normalize_note(parts[1])
+                note = parts[1]
                 duration_beats = float(parts[4])
                 notes.append((start_beat, note, duration_beats))
     return notes
@@ -84,7 +64,6 @@ def parse_song(song_str):
 def play_song(song_str, bpm=145, pin=17):
     """
     Plays the song using TonalBuzzer connected to the given GPIO pin.
-    The timing is synced to the given BPM.
     """
     buzzer = TonalBuzzer(pin)
     song = parse_song(song_str)
@@ -102,13 +81,14 @@ def play_song(song_str, bpm=145, pin=17):
             sleep(wait_time)
 
         try:
-            buzzer.play(Tone(note_name))
+            buzzer.play(Tone.from_note(note_name))  # ✅ the key fix!
             sleep(note_duration)
             buzzer.stop()
         except ValueError:
             print(f"Warning: Invalid note {note_name} – skipping.")
 
     buzzer.stop()
+
 
 
 
