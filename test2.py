@@ -46,14 +46,49 @@ Paste string as shown above after removing ";:" from
 the end and "Online Sequencer:120233:" from the start
 """
 
-from machine import Pin
+from gpiozero import TonalBuzzer
+from gpiozero.tones import Tone
+from time import sleep, time
 
-#One buzzer on pin 0
-mySong = music(song, pins=[Pin(13)])
+def parse_song(song_str):
+    """
+    Parses the input song string and returns a list of notes with timing info.
+    """
+    notes = []
+    for entry in song_str.strip().split(";"):
+        if entry:
+            parts = entry.strip().split()
+            if len(parts) == 5:
+                start_time = float(parts[0])
+                note = parts[1]
+                duration = float(parts[4])
+                notes.append((start_time, note, duration))
+    return notes
 
-#Four buzzers
-#mySong = music(song, pins=[Pin(0),Pin(1),Pin(2),Pin(3)])
+def play_song(song_str, pin=17):
+    """
+    Plays the song using TonalBuzzer connected to the given GPIO pin.
+    """
+    buzzer = TonalBuzzer(pin)
+    song = parse_song(song_str)
 
-while True:
-    print(mySong.tick())
-    sleep(0.04)
+    # Start timer
+    start_playback = time()
+
+    for note_start, note_name, duration in song:
+        # Wait until it's time to play the note
+        now = time()
+        wait_time = note_start - (now - start_playback)
+        if wait_time > 0:
+            sleep(wait_time)
+        
+        try:
+            buzzer.play(Tone(note_name))
+            sleep(duration)
+            buzzer.stop()
+        except ValueError:
+            print(f"Warning: Invalid note {note_name} – skipping.")
+
+    buzzer.stop()
+
+play_song(song)
