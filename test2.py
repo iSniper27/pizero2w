@@ -62,7 +62,7 @@ def parse_song(song_str):
                 notes.append((start_time, note, duration))
     return notes
 
-def play_song(song_str, pin=17):
+def play_song(song_str, pin=13):
     """
     Plays the song using TonalBuzzer connected to the given GPIO pin.
     """
