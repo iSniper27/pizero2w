@@ -50,42 +50,48 @@ from time import sleep, time
 def parse_song(song_str):
     """
     Parses the input song string and returns a list of notes with timing info.
+    Each note has (start_beat, note, duration_in_beats)
     """
     notes = []
     for entry in song_str.strip().split(";"):
         if entry:
             parts = entry.strip().split()
             if len(parts) == 5:
-                start_time = float(parts[0])
+                start_beat = float(parts[0])
                 note = parts[1]
-                duration = float(parts[4])
-                notes.append((start_time, note, duration))
+                duration_beats = float(parts[4])
+                notes.append((start_beat, note, duration_beats))
     return notes
 
-def play_song(song_str, pin=13):
+def play_song(song_str, bpm=145, pin=17):
     """
     Plays the song using TonalBuzzer connected to the given GPIO pin.
+    The timing is synced to the given BPM.
     """
     buzzer = TonalBuzzer(pin)
     song = parse_song(song_str)
+    beat_duration = 60 / bpm
 
     # Start timer
     start_playback = time()
 
-    for note_start, note_name, duration in song:
-        # Wait until it's time to play the note
+    for start_beat, note_name, duration_beats in song:
+        note_start_time = start_beat * beat_duration
+        note_duration = duration_beats * beat_duration
+
         now = time()
-        wait_time = note_start - (now - start_playback)
+        wait_time = note_start_time - (now - start_playback)
         if wait_time > 0:
             sleep(wait_time)
-        
+
         try:
             buzzer.play(Tone(note_name))
-            sleep(duration)
+            sleep(note_duration)
             buzzer.stop()
         except ValueError:
             print(f"Warning: Invalid note {note_name} – skipping.")
 
     buzzer.stop()
 
-play_song(song)
+
+play_song(song, bpm=145, pin=13)
