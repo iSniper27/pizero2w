@@ -1,6 +1,7 @@
 from gpiozero import LED
 import time
 import threading
+import json
 from flask import Flask, json
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
@@ -36,6 +37,7 @@ def flash_color(color):
     
 @socketio.on('led_flashing')
 def handle_led_flashing(data):
+    print(json.dumps(data))
     color = data.get('color')
     pin = leds.get(color)
     if pin:
