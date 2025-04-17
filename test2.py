@@ -42,54 +42,11 @@ then select all notes with CTRL+A and copy them with CTRL+C
 Paste string as shown above after removing ";:" from
 the end and "Online Sequencer:120233:" from the start
 """
+from music import music
 from gpiozero import TonalBuzzer
-from gpiozero.tones import Tone
-from time import sleep, time
 
-def parse_song(song_str):
-    """
-    Parses the input song string and returns a list of notes with timing info.
-    """
-    notes = []
-    for entry in song_str.strip().split(";"):
-        if entry:
-            parts = entry.strip().split()
-            if len(parts) == 5:
-                start_beat = float(parts[0])
-                note = parts[1]
-                duration_beats = float(parts[4])
-                notes.append((start_beat, note, duration_beats))
-    return notes
+buzzer = TonalBuzzer(13)
 
-def play_song(song_str, bpm=145, pin=17):
-    """
-    Plays the song using TonalBuzzer connected to the given GPIO pin.
-    """
-    buzzer = TonalBuzzer(pin)
-    song = parse_song(song_str)
-    beat_duration = 60 / bpm
+newSong = music(song, buzzer)
 
-    start_playback = time()
-
-    for start_beat, note_name, duration_beats in song:
-        note_start_time = start_beat * beat_duration
-        note_duration = duration_beats * beat_duration
-
-        now = time()
-        wait_time = note_start_time - (now - start_playback)
-        if wait_time > 0:
-            sleep(wait_time)
-
-        try:
-            buzzer.play(Tone.from_note(note_name))  # ✅ the key fix!
-            sleep(note_duration)
-            buzzer.stop()
-        except ValueError:
-            print(f"Warning: Invalid note {note_name} – skipping.")
-
-    buzzer.stop()
-
-
-
-
-play_song(song, bpm=145, pin=13)
+print(newSong.notes)
