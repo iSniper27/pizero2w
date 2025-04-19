@@ -18,7 +18,7 @@ leds = {
     'blue': LED(24)
 }
 
-rgbLED = RGBLED(9,10,11, active_high=True)
+rgbLED = RGBLED(9,10,11, active_high=False)
 rgbLED.off()
 
 
