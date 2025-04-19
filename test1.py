@@ -1,4 +1,4 @@
-from gpiozero import LED
+from gpiozero import LED, RGBLED
 import time
 import threading
 import json
@@ -18,18 +18,18 @@ leds = {
     'blue': LED(24)
 }
 
+rgbLED = RGBLED(9,10,11)
+
 
 def flash_led(pin):
     pin.on()
     time.sleep(1)
     pin.off()
-    socketio.emit('led_flashed', {'color': ''})
 
 @app.route('/flash/<color>')
 def flash_color(color):
     pin = leds.get(color)
     if pin:
-        socketio.emit('led_flashed', {'color': color})
         threading.Thread(target=flash_led, args=(pin,)).start()
         return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
     else:
@@ -37,13 +37,25 @@ def flash_color(color):
     
 @socketio.on('led_flashing')
 def handle_led_flashing(data):
-    print(json.dumps(data))
     color = data.get('color')
     pin = leds.get(color)
     if pin:
         threading.Thread(target=flash_led, args=(pin,)).start()
         return {'success': True}
     else:
+        return {'success': False, 'error': 'Invalid color'}
+
+@socketio.on('getRGB')
+def handle_led_flashing():
+    return rgbLED.value
+
+@socketio.on('setRGB')
+def handle_led_flashing(data):
+    colors = data.get('colors')
+    try:
+        rgbLED.value(colors)
+        return {'success': True}
+    except:
         return {'success': False, 'error': 'Invalid color'}
 
 if __name__ == "__main__":
