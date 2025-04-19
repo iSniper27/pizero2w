@@ -18,7 +18,7 @@ leds = {
     'blue': LED(24)
 }
 
-rgbLED = RGBLED(9,10,11)
+rgbLED = RGBLED(9,10,11).off()
 
 
 def flash_led(pin):
