@@ -18,7 +18,8 @@ leds = {
     'blue': LED(24)
 }
 
-rgbLED = RGBLED(9,10,11).off()
+rgbLED = RGBLED(9,10,11)
+rgbLED.off()
 
 
 def flash_led(pin):
@@ -47,7 +48,7 @@ def handle_led_flashing(data):
 
 @socketio.on('getRGB')
 def handle_led_flashing():
-    return rgbLED.value
+    return {'leds': rgbLED.value}
 
 @socketio.on('setRGB')
 def handle_led_flashing(data):
