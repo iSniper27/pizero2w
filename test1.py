@@ -55,7 +55,7 @@ def handle_led_flashing(data):
     colors = data.get('colors')
     print(colors)
     try:
-        rgbLED.value(colors)
+        rgbLED.color(colors)
         return {'success': True}
     except:
         return {'success': False, 'error': 'Invalid color'}
