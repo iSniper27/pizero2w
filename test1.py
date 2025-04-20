@@ -48,7 +48,7 @@ def handle_led_flashing(data):
 
 @socketio.on('getRGB')
 def handle_led_flashing():
-    return {'leds': rgbLED.value}
+    return {'rgb': rgbLED.value}
 
 @socketio.on('setRGB')
 def handle_led_flashing(data):
