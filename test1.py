@@ -53,6 +53,7 @@ def handle_led_flashing():
 @socketio.on('setRGB')
 def handle_led_flashing(data):
     colors = data.get('colors')
+    print(colors)
     try:
         rgbLED.value(colors)
         return {'success': True}
