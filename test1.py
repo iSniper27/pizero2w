@@ -53,9 +53,8 @@ def handle_led_flashing():
 @socketio.on('setRGB')
 def handle_led_flashing(data):
     colors = data.get('colors')
-    print(colors)
     try:
-        rgbLED.color(colors)
+        rgbLED.color = tuple(colors)
         return {'success': True}
     except:
         return {'success': False, 'error': 'Invalid color'}
