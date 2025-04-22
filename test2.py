@@ -43,10 +43,8 @@ Paste string as shown above after removing ";:" from
 the end and "Online Sequencer:120233:" from the start
 """
 from music import music
-from gpiozero import TonalBuzzer
+from music import MockBuzzer
 
-buzzer = TonalBuzzer(13)
+newSong = music(song)
 
-newSong = music(song, buzzer)
-
-print(newSong.notes)
+newSong.play(MockBuzzer())
