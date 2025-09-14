@@ -33,12 +33,19 @@ def read_pico_uart():
         try:
             line = ser.readline().decode().strip()
             if line:
-                print(line)
-                time.sleep(5)
+                pot_value = int(line)
         except Exception as e:
             print("UART read error:", e)
 
 threading.Thread(target=read_pico_uart, daemon=True).start()
+
+@app.route('/value')
+def value():
+    try:
+        return json.dumps(pot_value, {'success': True}), 200, {'ContentType': 'application/json'}
+    except:
+        return json.dumps({'success': False, 'error': 'Invalid color'}), 400, {'ContentType': 'application/json'}
+
 
 def flash_led(pin):
     pin.on()
