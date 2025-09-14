@@ -5,6 +5,8 @@ import json
 from flask import Flask, json
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
+import serial
+import threading
 
 app = Flask(__name__)
 CORS(app)
@@ -21,6 +23,22 @@ leds = {
 rgbLED = RGBLED(9,10,11, active_high=False)
 rgbLED.off()
 
+ser = serial.Serial('/dev/serial0', 9600, timeout=1)
+
+pot_value = 0
+
+def read_pico_uart():
+    global pot_value
+    while True:
+        try:
+            line = ser.readline().decode().strip()
+            if line:
+                print(line)
+                time.sleep(5)
+        except Exception as e:
+            print("UART read error:", e)
+
+threading.Thread(target=read_pico_uart, daemon=True).start()
 
 def flash_led(pin):
     pin.on()
