@@ -42,11 +42,10 @@ threading.Thread(target=read_pico_uart, daemon=True).start()
 @app.route('/value')
 def value():
     try:
-        return json.dumps(pot_value, {'success': True}), 200, {'ContentType': 'application/json'}
-    except:
-        return json.dumps({'success': False, 'error': 'Invalid color'}), 400, {'ContentType': 'application/json'}
-
-
+        return json.dumps({'success': True, 'value': pot_value}), 200, {'Content-Type': 'application/json'}
+    except Exception as e:
+        return json.dumps({'success': False, 'error': str(e)}), 400, {'Content-Type': 'application/json'}
+    
 def flash_led(pin):
     pin.on()
     time.sleep(1)
