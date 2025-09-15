@@ -28,11 +28,6 @@ pot_value = None
 
 def read_pico_uart():
     global pot_value
-    buffer = ""
-    smoothed_value = None  # start with no value
-    last_emit = 0
-    EMIT_INTERVAL = 0.05  # emit every 50ms (~20Hz)
-    ALPHA = 0.01  # 1% smoothing
 
     while True:
         try:
@@ -43,18 +38,9 @@ def read_pico_uart():
                     line, buffer = buffer.split("\n", 1)
                     line = line.strip()
                     if line.isdigit():
-                        raw_value = int(line)
-                        if smoothed_value is None:
-                            smoothed_value = raw_value
-                        else:
-                            smoothed_value = smoothed_value * (1 - ALPHA) + raw_value * ALPHA
-
-                        pot_value = int(smoothed_value)  # update global
-
-                        now = time.time()
-                        if now - last_emit > EMIT_INTERVAL:
-                            last_emit = now
-                            socketio.emit("pot_update", {"value": int(smoothed_value)}, broadcast=True)
+                        pot_value = int(line)
+                        socketio.emit("pot_update", {"value": pot_value})
+                        time.sleep(0.1)
         except Exception as e:
             print("UART read error:", e)
 
