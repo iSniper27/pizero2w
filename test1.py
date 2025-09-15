@@ -39,6 +39,7 @@ def read_pico_uart():
                     line = line.strip()
                     if line.isdigit():
                         pot_value = int(line)
+                        socketio.emit("pot_update", {"value": pot_value})
         except Exception as e:
             print("UART read error:", e)
 
