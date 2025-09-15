@@ -24,16 +24,21 @@ rgbLED = RGBLED(9,10,11, active_high=False)
 rgbLED.off()
 
 ser = serial.Serial('/dev/serial0', 9600, timeout=1)
-
-pot_value = 0
+pot_value = None
 
 def read_pico_uart():
     global pot_value
+    buffer = ""
     while True:
         try:
-            line = ser.readline().decode().strip()
-            if line:
-                pot_value = int(line)
+            data = ser.read(64).decode(errors="ignore")
+            if data:
+                buffer += data
+                while "\n" in buffer:
+                    line, buffer = buffer.split("\n", 1)
+                    line = line.strip()
+                    if line.isdigit():
+                        pot_value = int(line)
         except Exception as e:
             print("UART read error:", e)
 
