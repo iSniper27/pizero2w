@@ -33,14 +33,11 @@ def read_pico_uart():
         try:
             data = ser.read(64).decode(errors="ignore")
             if data:
-                buffer += data
-                while "\n" in buffer:
-                    line, buffer = buffer.split("\n", 1)
-                    line = line.strip()
-                    if line.isdigit():
-                        pot_value = int(line)
-                        socketio.emit("pot_update", {"value": pot_value})
-                        time.sleep(0.1)
+                line = data.strip()
+                if line.isdigit():
+                    pot_value = int(line)
+                    socketio.emit("pot_update", {"value": pot_value})
+                    time.sleep(0.1)
         except Exception as e:
             print("UART read error:", e)
 
