@@ -41,12 +41,16 @@ def read_pico_uart():
                     line = line.strip()
                     if line.isdigit():
                         pot_value = int(line)
-                        socketio.emit("pot_update", {"value": pot_value})
-                        time.sleep(0.1)
         except Exception as e:
             print("UART read error:", e)
 
+def updatePot():
+    while True:
+        socketio.emit("pot_update", {"value": pot_value})
+        time.sleep(0.1)
+
 threading.Thread(target=read_pico_uart, daemon=True).start()
+threading.Thread(target=updatePot, daemon=True).start()
     
 def flash_led(pin):
     pin.on()
