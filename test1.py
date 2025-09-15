@@ -29,6 +29,9 @@ pot_value = None
 def read_pico_uart():
     global pot_value
     buffer = ""
+    last_value = None
+    last_emit = 0
+    EMIT_INTERVAL = 0.1
     while True:
         try:
             data = ser.read(64).decode(errors="ignore")
@@ -38,19 +41,17 @@ def read_pico_uart():
                     line, buffer = buffer.split("\n", 1)
                     line = line.strip()
                     if line.isdigit():
-                        pot_value = int(line)
-                        socketio.emit("pot_update", {"value": pot_value})
+                        value = int(line)
+                        pot_value = value
+                        now = time.time()
+                        if value != last_value and now - last_emit > EMIT_INTERVAL:
+                            last_value = value
+                            last_emit = now
+                            socketio.emit("pot_update", {"value": value})
         except Exception as e:
             print("UART read error:", e)
 
 threading.Thread(target=read_pico_uart, daemon=True).start()
-
-@app.route('/value')
-def value():
-    try:
-        return json.dumps({'success': True, 'value': pot_value}), 200, {'Content-Type': 'application/json'}
-    except Exception as e:
-        return json.dumps({'success': False, 'error': str(e)}), 400, {'Content-Type': 'application/json'}
     
 def flash_led(pin):
     pin.on()
