@@ -33,7 +33,7 @@ def read_pico_uart():
 
     while True:
         try:
-            data = ser.read(64).decode(errors="ignore")
+            data = ser.read().decode(errors="ignore")
             if data:
                 buffer += data
                 while "\n" in buffer:
